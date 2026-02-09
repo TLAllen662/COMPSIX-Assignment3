@@ -11,7 +11,13 @@ async function workoutCalculator(filePath) {
 
     // Create a promise to handle the CSV parsing
     await new Promise((resolve, reject) => {
-      fs.createReadStream(filePath)
+      const stream = fs.createReadStream(filePath);
+      
+      stream.on('error', (error) => {
+        reject(error);
+      });
+      
+      stream
         .pipe(csv())
         .on('data', (row) => {
           // Collect each row (workout) from the CSV
